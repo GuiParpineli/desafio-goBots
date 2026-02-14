@@ -1,0 +1,11 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: receiver-api
+  mongodb:
+#    uri: mongodb://root:verysecret@mongo:27017/gobots_receiver?authSource=admin
+    uri: mongodb://root:verysecret@localhost:27017/gobots_receiver?authSource=admin
+  threads:
+    virtual:
+      enabled: true

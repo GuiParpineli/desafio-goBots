@@ -1,0 +1,51 @@
+version: "3.9"
+
+services:
+
+  mongo:
+    image: mongo:7
+    container_name: gobots-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: verysecret
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+#    networks:
+#      - gobots-net
+
+  marketplace-api:
+    build:
+      context: .
+      dockerfile: marketplace-api/Dockerfile
+    container_name: gobots-marketplace
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://root:verysecret@mongo:27017/gobots?authSource=admin
+    depends_on:
+      - mongo
+    networks:
+      - gobots-net
+
+  receiver-api:
+    build:
+      context: .
+      dockerfile: receiver-api/Dockerfile
+    container_name: gobots-receiver
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://root:verysecret@mongo:27017/gobots_receiver?authSource=admin
+    depends_on:
+      - mongo
+    networks:
+      - gobots-net
+
+volumes:
+  mongo-data:
+
+networks:
+  gobots-net:
+    driver: bridge
