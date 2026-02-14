@@ -1,6 +1,5 @@
-package com.gobots.receiverapi.core.repository
+package com.gobots.receiverapi.core.data.repository
 
-import com.gobots.receiverapi.adapter.infra.repository.entity.OrderEventDocument
 import com.gobots.receiverapi.core.model.OrderEvent
 
 interface OrderEventRepository {

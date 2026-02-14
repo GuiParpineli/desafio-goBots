@@ -8,7 +8,15 @@ data class CreateOrderRequest(
 
 data class OrderResponseDTO(
     val id: String,
-    val storeId: String,
+    val status: String
+)
+
+data class OrderCompleteResponseDTO(
+    val id: String,
+    val storeID: String,
+    val productsIDs: List<String>,
+    val clientID: String,
+    val priority: Int,
     val status: String,
-    val createdAt: Long,
+    val createdAt: Long
 )

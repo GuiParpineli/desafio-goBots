@@ -1,6 +1,6 @@
-package com.gobots.receiverapi.adapter.infra.repository
+package com.gobots.receiverapi.adapter.infra.dataprovider.repository
 
-import com.gobots.receiverapi.adapter.infra.repository.entity.OrderEventDocument
+import com.gobots.receiverapi.adapter.infra.dataprovider.repository.entity.OrderEventDocument
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 

@@ -28,4 +28,5 @@ class OrderUseCaseImpl(
     override fun findAll(): List<Order> = repository.findAll()
 
     override fun findByStoreId(storeId: String): List<Order> = repository.findByStoreId(storeId)
+    override fun findById(orderId: String) = repository.findById(orderId)
 }

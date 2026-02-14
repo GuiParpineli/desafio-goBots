@@ -8,4 +8,5 @@ interface OrderUseCase {
     fun updateEvent(orderId: String, status: EventStatus): Order
     fun findAll(): List<Order>
     fun findByStoreId(storeId: String): List<Order>
+    fun findById(orderId: String): Order?
 }

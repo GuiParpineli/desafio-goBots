@@ -1,6 +1,5 @@
 package com.gobots.receiverapi.core.usecase
 
-import com.gobots.receiverapi.adapter.infra.repository.entity.OrderEventDocument
 import com.gobots.receiverapi.core.model.OrderEvent
 
 interface OrderEventUseCase {

@@ -1,8 +1,9 @@
 package com.gobots.receiverapi.adapter.infra.beans
 
-import com.gobots.receiverapi.adapter.infra.repository.OrderEventMongoRepository
-import com.gobots.receiverapi.core.repository.OrderEventRepository
-import com.gobots.receiverapi.core.repository.OrderEventRepositoryImpl
+import com.gobots.receiverapi.adapter.infra.dataprovider.repository.OrderEventMongoRepository
+import com.gobots.receiverapi.core.data.OrderClient
+import com.gobots.receiverapi.core.data.repository.OrderEventRepository
+import com.gobots.receiverapi.core.data.repository.OrderEventRepositoryImpl
 import com.gobots.receiverapi.core.usecase.OrderEventUseCase
 import com.gobots.receiverapi.core.usecase.OrderEventUseCaseImpl
 import org.springframework.context.annotation.Bean
@@ -14,6 +15,5 @@ class BeanConfiguration {
     fun upOrderEventRepository(repo: OrderEventMongoRepository) = OrderEventRepositoryImpl(repo)
 
     @Bean
-    fun upOrderUseCase(repo: OrderEventRepository): OrderEventUseCase = OrderEventUseCaseImpl(repo)
-
+    fun upOrderUseCase(repo: OrderEventRepository, client: OrderClient) = OrderEventUseCaseImpl(repo, client)
 }

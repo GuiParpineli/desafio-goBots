@@ -1,7 +1,6 @@
-package com.gobots.receiverapi.core.repository
+package com.gobots.receiverapi.core.data.repository
 
-import com.gobots.receiverapi.adapter.infra.repository.OrderEventMongoRepository
-import com.gobots.receiverapi.adapter.infra.repository.entity.OrderEventDocument
+import com.gobots.receiverapi.adapter.infra.dataprovider.repository.OrderEventMongoRepository
 import com.gobots.receiverapi.adapter.mapper.Mapper.toDocument
 import com.gobots.receiverapi.adapter.mapper.Mapper.toDomain
 import com.gobots.receiverapi.core.model.OrderEvent
