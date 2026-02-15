@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 class SubscriptionControllerImpl(
     private val useCase: OrderSubscriptionUseCase,
 ) : SubscriptionController {
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     override fun subscribe(@RequestBody @Valid req: CreateSubscriptionRequest): ResponseEntity<SubscriptionResponseDTO> {

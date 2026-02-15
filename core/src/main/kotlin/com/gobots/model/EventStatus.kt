@@ -3,8 +3,21 @@ package com.gobots.model
 import java.util.concurrent.Future
 import javax.print.attribute.standard.JobState.COMPLETED
 
-enum class EventStatus {
-    CREATED, PAID, SHIPPED, COMPLETED, CANCELLED;
+enum class EventStatus(private val allowedTransitions: () -> Set<EventStatus>) {
+    CREATED({ setOf(PAID, CANCELLED) }),
+    PAID({ setOf(SHIPPED, CANCELLED) }),
+    SHIPPED({ setOf(COMPLETED, CANCELLED) }),
+    COMPLETED({ emptySet() }),
+    CANCELLED({ emptySet() });
+
+    fun canTransitionTo(next: EventStatus): Boolean = next in allowedTransitions()
+
+    fun transitionTo(next: EventStatus): EventStatus {
+        require(canTransitionTo(next)) {
+            "Invalid transition status: $this → $next (ALLOWED: ${allowedTransitions()})"
+        }
+        return next
+    }
 
     fun wireName(): String = when (this) {
         CREATED -> "order.created"

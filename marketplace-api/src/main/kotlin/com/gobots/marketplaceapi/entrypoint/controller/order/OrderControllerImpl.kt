@@ -14,10 +14,12 @@ import org.springframework.web.server.ResponseStatusException
 @RestController
 @RequestMapping("/orders")
 class OrderControllerImpl(private val service: OrderService) : OrderController {
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    override fun create(@RequestBody @Valid req: CreateOrderRequest): ResponseEntity<OrderResponseDTO> =
-        ResponseEntity.ok(service.create(req.storeId))
+    override fun create(@RequestBody @Valid req: CreateOrderRequest): ResponseEntity<OrderResponseDTO> {
+        return ResponseEntity.ok(service.create(req.storeId))
+    }
 
     @PatchMapping("/{orderId}/{status}")
     override fun updateStatus(
@@ -30,16 +32,13 @@ class OrderControllerImpl(private val service: OrderService) : OrderController {
     @GetMapping("/{orderId}")
     override fun findById(@PathVariable orderId: String): ResponseEntity<OrderCompleteResponseDTO> {
         return ResponseEntity.ok(service.findById(orderId))
-            ?: throw ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Order not found: $orderId"
-            )
     }
 
     @GetMapping
     override fun findAll(): ResponseEntity<List<OrderCompleteResponseDTO>> = ResponseEntity.ok(service.findAll())
 
     @GetMapping(params = ["storeId"])
-    override fun findByStore(@RequestParam storeId: String): ResponseEntity<List<OrderCompleteResponseDTO>> =
-        ResponseEntity.ok(service.findByStoreId(storeId))
-
+    override fun findByStore(@RequestParam storeId: String): ResponseEntity<List<OrderCompleteResponseDTO>> {
+        return ResponseEntity.ok(service.findByStoreId(storeId))
+    }
 }
