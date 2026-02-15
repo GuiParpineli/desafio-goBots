@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
 
   mongo:
@@ -12,8 +10,8 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
-#    networks:
-#      - gobots-net
+    networks:
+      - gobots-net
 
   marketplace-api:
     build:
