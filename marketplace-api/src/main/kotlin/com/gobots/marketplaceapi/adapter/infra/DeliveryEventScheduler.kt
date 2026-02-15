@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 import java.time.Instant
+import java.util.concurrent.TimeUnit
 
 @Component
 class DeliveryEventScheduler(
@@ -21,11 +22,11 @@ class DeliveryEventScheduler(
         private const val BATCH_SIZE = 50
         private const val MAX_ATTEMPTS = 5
         private val BACKOFF_MILLIS = longArrayOf(
-            60_000,          // 1 min
-            5 * 60_000,      // 5 min
-            15 * 60_000,     // 15 min
-            60 * 60_000,     // 1 h
-            6 * 60 * 60_000, // 6 h
+            TimeUnit.MINUTES.toMillis(1),
+            TimeUnit.MINUTES.toMillis(5),
+            TimeUnit.MINUTES.toMillis(15),
+            TimeUnit.HOURS.toMillis(1),
+            TimeUnit.HOURS.toMillis(6),
         )
     }
 
