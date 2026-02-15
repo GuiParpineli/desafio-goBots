@@ -5,8 +5,10 @@ import com.gobots.receiverapi.adapter.infra.dataprovider.repository.entity.Order
 import com.gobots.receiverapi.adapter.infra.dataprovider.repository.entity.OrderSnapshotEmbedded
 import com.gobots.receiverapi.core.model.OrderEvent
 import com.gobots.receiverapi.core.model.OrderSnapshot
+import com.gobots.receiverapi.entrypoint.controller.dto.OrderCompleteResponseDTO
 import com.gobots.receiverapi.entrypoint.controller.dto.OrderEventResponseDTO
 import com.gobots.receiverapi.entrypoint.controller.dto.OrderReceiveDTO
+import com.gobots.receiverapi.entrypoint.controller.dto.OrderSnapshotDTO
 import org.springframework.data.mongodb.core.aggregation.MergeOperation.UniqueMergeId.id
 
 object Mapper {
@@ -78,5 +80,23 @@ object Mapper {
         priority = 0,
         status = status,
         createdAt = createdAt,
+    )
+
+    fun OrderEvent.toCompleteDTO() = OrderCompleteResponseDTO(
+        id = this.id!!,
+        event = this.event,
+        orderID = this.orderID,
+        storeID = this.storeID,
+        timestamp = this.timestamp,
+        orderSnapshot = this.orderSnapshot?.let {
+            OrderSnapshotDTO(
+                productsIDs = it.productsIDs,
+                clientID = it.clientID,
+                priority = it.priority,
+                status = it.status,
+                createdAt = it.createdAt,
+            )
+        },
+        processed = this.processed,
     )
 }

@@ -226,8 +226,9 @@ Para validar se o Receiver salvou o pedido, basta enviar um GET para o endpoint 
 Processado informa se conseguir enriquecer o Json buscando no endpoint do marketplace-api. Caso processed:false, o
 scheduler tenta processar de tempos em tempos.
 
-GET: http://localhost:8081/order-receiver/
-GET: http://localhost:8081/order-receiver/byID/{id}
+**GET**: http://localhost:8081/order-receiver/
+
+**GET**: http://localhost:8081/order-receiver/byID/{id}
 
 Resposta:
 
@@ -255,6 +256,73 @@ Resposta:
     "orderID": "6991d7c8467e0b90251b6ce4",
     "storeID": "1",
     "timestamp": 1771177445494,
+    "processed": true
+  }
+]
+```
+
+Caso deseje ver o snapshot juntamente, consultar o endpoint:
+
+**GET**: http://localhost:8081/order-receiver/complete
+
+**Resposta**:
+```json
+[
+  {
+    "id": "6991d7cb0c71bd71607642aa",
+    "event": "CREATED",
+    "orderID": "6991d7c8467e0b90251b6ce4",
+    "storeID": "1",
+    "timestamp": 1771165640036,
+    "orderSnapshot": {
+      "productsIDs": [
+        "1",
+        "2",
+        "3"
+      ],
+      "clientID": "1",
+      "priority": 0,
+      "status": "order.created",
+      "createdAt": 1771165640000
+    },
+    "processed": true
+  },
+  {
+    "id": "6992033f1da516c2836cf8d4",
+    "event": "PAID",
+    "orderID": "6991d7c8467e0b90251b6ce4",
+    "storeID": "1",
+    "timestamp": 1771176765416,
+    "orderSnapshot": {
+      "productsIDs": [
+        "1",
+        "2",
+        "3"
+      ],
+      "clientID": "1",
+      "priority": 0,
+      "status": "order.paid",
+      "createdAt": 1771165640000
+    },
+    "processed": true
+  },
+  {
+    "id": "699205e7df2675ea42f5d569",
+    "event": "SHIPPED",
+    "orderID": "6991d7c8467e0b90251b6ce4",
+    "storeID": "1",
+    "timestamp": 1771177445494,
+    "orderSnapshot": {
+      "productsIDs": [
+        "1",
+        "2",
+        "3"
+      ],
+      "clientID": "1",
+      "priority": 0,
+      "status": "order.shipped",
+      "createdAt": 1771165640000
+    },
     "processed": true
   }
 ]

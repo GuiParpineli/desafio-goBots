@@ -1,10 +1,12 @@
 package com.gobots.receiverapi.entrypoint.controller
 
 import com.gobots.receiverapi.adapter.service.OrderEventService
+import com.gobots.receiverapi.entrypoint.controller.dto.OrderCompleteResponseDTO
 import com.gobots.receiverapi.entrypoint.controller.dto.OrderEventResponseDTO
 import com.gobots.receiverapi.entrypoint.controller.dto.OrderReceiveDTO
 import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
+import org.springframework.data.mongodb.core.aggregation.MergeOperation.UniqueMergeId.id
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -38,5 +40,8 @@ class OrderEventControllerImpl(
     override fun listAll(): List<OrderEventResponseDTO> = service.findAll()
 
     @GetMapping("/byID/{id}")
-    override fun listAll(@PathVariable id: String): List<OrderEventResponseDTO> = service.findByID(id)
+    override fun listByID(@PathVariable id: String): List<OrderEventResponseDTO> = service.findByID(id)
+
+    @GetMapping("/complete")
+    override fun listAllComplete(): List<OrderCompleteResponseDTO> = service.findAllComplete()
 }

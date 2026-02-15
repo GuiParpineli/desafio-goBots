@@ -1,5 +1,6 @@
 package com.gobots.receiverapi.entrypoint.controller
 
+import com.gobots.receiverapi.entrypoint.controller.dto.OrderCompleteResponseDTO
 import com.gobots.receiverapi.entrypoint.controller.dto.OrderEventResponseDTO
 import com.gobots.receiverapi.entrypoint.controller.dto.OrderReceiveDTO
 import io.swagger.v3.oas.annotations.Operation
@@ -7,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 
 @Tag(name = "Pedidos")
 interface OrderEventController {
@@ -43,5 +45,6 @@ interface OrderEventController {
         summary = "Lista pedido baseado no orderID",
         description = "Pode ser usado para verificar se o pedido foi recebido e se for processado."
     )
-    fun listAll(id: String): List<OrderEventResponseDTO>
+    fun listByID(id: String): List<OrderEventResponseDTO>
+    fun listAllComplete(): List<OrderCompleteResponseDTO>
 }
