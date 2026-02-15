@@ -4,8 +4,8 @@ spring:
   application:
     name: marketplace-api
   mongodb:
-#    uri: mongodb://root:verysecret@mongo:27017/marketplace?authSource=admin
-    uri: mongodb://root:verysecret@localhost:27017/marketplace?authSource=admin
+    uri: mongodb://root:verysecret@mongo:27017/marketplace?authSource=admin
+#    uri: mongodb://root:verysecret@localhost:27017/marketplace?authSource=admin
   threads:
     virtual:
       enabled: true

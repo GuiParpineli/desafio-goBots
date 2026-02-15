@@ -4,13 +4,13 @@ spring:
   application:
     name: receiver-api
   mongodb:
-#    uri: mongodb://root:verysecret@mongo:27017/receiver?authSource=admin
-    uri: mongodb://root:verysecret@localhost:27017/receiver?authSource=admin
+    uri: mongodb://root:verysecret@mongo:27017/receiver?authSource=admin
+#    uri: mongodb://root:verysecret@localhost:27017/receiver?authSource=admin
   threads:
     virtual:
       enabled: true
 
 marketplace:
   api:
-    url: http://localhost:8080
-#    url: http://marketplace-api:8080
+#    url: http://localhost:8080
+    url: http://marketplace-api:8080

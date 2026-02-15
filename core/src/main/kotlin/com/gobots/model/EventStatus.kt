@@ -11,7 +11,7 @@ enum class EventStatus(private val allowedTransitions: () -> Set<EventStatus>) {
 
     fun transitionTo(next: EventStatus): EventStatus {
         require(canTransitionTo(next)) {
-            "Invalid transition status: $this → $next (ALLOWED: ${allowedTransitions().map { it.wireName()}})"
+            "Status invalido: $this → $next | Permitido: ${allowedTransitions().map { it.wireName() }}"
         }
         return next
     }
