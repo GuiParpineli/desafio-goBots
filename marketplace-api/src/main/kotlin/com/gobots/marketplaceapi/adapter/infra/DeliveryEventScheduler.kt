@@ -32,7 +32,7 @@ class DeliveryEventScheduler(
     @Scheduled(fixedDelay = 5_000)
     fun processPending() {
         val now = Instant.now().toEpochMilli()
-        val due = deliveryRepo.findDue(
+        val due = deliveryRepo.getPendingDeliveries(
             limit = BATCH_SIZE,
             timeStamp = now,
             status = setOf(DeliveryStatus.PENDING, DeliveryStatus.RETRY),

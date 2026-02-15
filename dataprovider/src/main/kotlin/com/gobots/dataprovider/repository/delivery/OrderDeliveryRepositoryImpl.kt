@@ -16,7 +16,7 @@ class OrderDeliveryRepositoryImpl(
     override fun save(delivery: OrderDelivery): OrderDelivery =
         mongo.save(delivery.toDocument()).toDomain()
 
-    override fun findDue(limit: Int, timeStamp: Long, status: Set<DeliveryStatus>): List<OrderDelivery> =
+    override fun getPendingDeliveries(limit: Int, timeStamp: Long, status: Set<DeliveryStatus>): List<OrderDelivery> =
         mongo.findByStatusInAndNextAttemptAtLessThanEqual(
             status = status.map { it.name }.toSet(),
             nextAttemptAt = timeStamp,

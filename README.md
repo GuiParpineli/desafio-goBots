@@ -78,9 +78,9 @@ O projeto pode ser executado com Docker. Para isso, basta executar o comando:
 
 ### ENDPOINTS MARKETPLACE:
 
-A documentação pode ser visualizado no Swagger: http://localhost:8080/swagger-ui/index.html
+A documentação pode ser visualizado no **Swagger**: http://localhost:8080/swagger-ui/index.html
 
-Fluxo e endpoints:
+## Fluxo e endpoints:
 
 **Para criar um pedido:**
 
@@ -88,7 +88,7 @@ A criação de pedidos ocorre por meio do endpoint POST /orders e recebe um JSON
 O endpoint grava o pedido no banco de dados, retorna o id do pedido e enfileira para o envio do webhook caso haja
 cadastro para o receiver-api.
 
-_**URL**_: http://localhost:8080/orders
+**POST**: http://localhost:8080/orders
 
 **Request Body**:
 
@@ -120,10 +120,11 @@ curl -X 'POST' \
 }'
 ```
 
-Para cadastrar um webhook, basta enviar um POST para o endpoint /webhooks com os dados do webhook.
-Lembre-se que se for executado via docker a callbackUrl deve possuir o nome do container em vez de localhost.
+- Para cadastrar um webhook, basta enviar um POST para o endpoint /webhooks com os dados do webhook.
+  Lembre-se que se for executado via docker a callbackUrl deve possuir o nome do container em vez de localhost.
 
-**URL**: POST http://localhost:8080/webhooks
+  **POST**: http://localhost:8080/webhooks
+
 **Request Body**:
 
 ```json
@@ -160,7 +161,7 @@ STATUS CODE : 200
 }
 ```
 
-Para vizualizar os pedidos, apenas informar o id no endpoint: GET http://localhost:8080/orders/{id}
+- Para vizualizar os pedidos, apenas informar o id no endpoint: GET http://localhost:8080/orders/{id}
 
 **Resposta**:
 STATUS CODE : 200
@@ -206,8 +207,9 @@ STATUS CODE : 200
 }
 ```
 
-Para buscar pedidos por status e orderID:
-PATCH: http://localhost:8080/orders/{orderId}/{status}
+- Para buscar pedidos por status e orderID:
+
+  **PATCH**: http://localhost:8080/orders/{orderId}/{status}
 
 curl:
 
@@ -227,8 +229,9 @@ STATUS CODE : 202
 }
 ```
 
-Listar todos os pedidos de loja especifica:
-GET: http://localhost:8080/orders?storeId=1
+- Listar todos os pedidos de loja especifica:
+
+  **GET**: http://localhost:8080/orders?storeId=1
 
 curl:
 
@@ -239,7 +242,7 @@ curl -X 'GET' \
 ```
 
 **Resposta**:
-STATUS CODE : 200
+STATUS CODE : **200**
 
 ```json
 [
@@ -273,8 +276,14 @@ STATUS CODE : 200
 
 ### ENDPOINTS RECEIVER:
 
-Recebe os pedidos enviados pelo webhook e grava no banco de dados.
-**URL**: POST http://localhost:8081/order-receiver
+A documentação pode ser visualizado no **Swagger**: http://localhost:8081/swagger-ui/index.html
+
+## Fluxo e endpoints:
+
+- Recebe os pedidos enviados pelo webhook e grava no banco de dados.
+
+  **POST**: http://localhost:8081/order-receiver
+
 **Request Body**:
 
 ```json
@@ -287,7 +296,7 @@ Recebe os pedidos enviados pelo webhook e grava no banco de dados.
 }
 ```
 
-curl:
+**curl**:
 
 ```curl
 curl -X 'POST' \
@@ -304,4 +313,60 @@ curl -X 'POST' \
 ```
 
 **Resposta**:
-STATUS CODE: 202 
+STATUS CODE: 202
+
+Apenas retorna 202 para garantir que o webhook foi recebido.
+
+Retorna 200 caso já tenha sido recebido anteriormente.
+
+- Para **validar** se o webhook foi recebido e se foi processado, basta informar o orderID:
+
+**GET**: http://localhost:8081/order-receiver/byID/{id}
+
+```bash
+curl -X 'GET' \
+  'http://localhost:8081/order-receiver/order-receiver/byID/6991d7cb0c71bd71607642aa' \
+  -H 'accept: */*'
+```
+
+**Resposta**:
+STATUS CODE: 200
+
+```json
+[
+  {
+    "id": "6991d7cb0c71bd71607642aa",
+    "event": "CREATED",
+    "orderID": "6991d7c8467e0b90251b6ce4",
+    "storeID": "1",
+    "timestamp": 1771165640036
+  }
+]
+```
+
+- Para listar todos os pedidos recebidos:
+
+  **GET**: http://localhost:8081/order-receiver/
+
+curl:
+
+```bash
+curl -X 'GET' \
+  'http://localhost:8081/order-receiver/order-receiver/' \
+  -H 'accept: */*'
+```
+
+**Resposta**:
+STATUS CODE: 200
+
+``` json
+[
+  {
+    "id": "6991d7cb0c71bd71607642aa",
+    "event": "CREATED",
+    "orderID": "6991d7c8467e0b90251b6ce4",
+    "storeID": "1",
+    "timestamp": 1771165640036
+  }
+]
+```

@@ -39,6 +39,9 @@ interface OrderEventController {
     @Operation(summary = "Lista todos os pedidos salvos no banco de dados.")
     fun listAll(): List<OrderEventResponseDTO>
 
-    @Operation(summary = "Lista todos os pedidos salvos no banco de dados por ID.")
+    @Operation(
+        summary = "Lista pedido baseado no orderID",
+        description = "Pode ser usado para verificar se o pedido foi recebido e se for processado."
+    )
     fun listAll(id: String): List<OrderEventResponseDTO>
 }

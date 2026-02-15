@@ -5,5 +5,6 @@ class OrderEventResponseDTO(
     val event: String,
     val orderID: String,
     val storeID: String,
-    val timestamp: Long
+    val timestamp: Long,
+    val processed: Boolean
 )

@@ -67,6 +67,7 @@ object Mapper {
         orderID = this.orderID,
         storeID = this.storeID,
         timestamp = this.timestamp,
+        processed = this.processed
     )
 
     fun MarketplaceOrderResponse.toSnapShot() = OrderSnapshot(
