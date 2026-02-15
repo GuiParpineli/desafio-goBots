@@ -22,7 +22,7 @@ utilizada com as seguintes camadas:
 
 - ### marketplace-api
 
-A marketplace-api é uma camada que contém a implementação da API no Spring Framework contendo beans, controllers e DTOs.
+A marketplace-api é um módulo que contém a implementação da API no Spring Framework contendo beans, controllers e DTOs.
 Ela é uma api multi-modulo, utilizando módulos **Core** e **DataProvider**. Ser multi-modulo garante a segurança na
 arquitetura para ser seguido a risca sem misturar as camadas.
 
@@ -36,8 +36,8 @@ segue os mesmos princípios do marketplace-api.
 Essas camadas são independentes e podem ser desenvolvidas e testadas de forma isolada, permitindo uma maior
 flexibilidade e facilidade de manutenção do sistema. Pode ser migrado de framework, banco de dados e bibliotecas com
 uma facilidade extrema.
-O código é modular e fácil de entender, facilitando a manutenção e evolução do sistema e baseado nos princípios do clean
-code(Uncle Bob) e SOLID.
+O código é modular facilitando a manutenção e evolução do sistema e baseado nos princípios do clean code(Uncle Bob) e
+SOLID.
 Objetos como DTOs podem conter diversas logicas de validação com Validations annotations e Jackson de forma separada não
 poluindo outros objetos.
 Entities podem ser feitas para JPA e MongoDB sem quebrar o fluxo do código.
@@ -76,21 +76,22 @@ O projeto pode ser executado com Docker. Para isso, basta executar o comando:
 
 ## Utilização das APIs
 
-### marketplace-api
+### ENDPOINTS MARKETPLACE:
 
 A documentação pode ser visualizado no Swagger: http://localhost:8080/swagger-ui/index.html
 
 Fluxo e endpoints:
 
-Para criar um pedido:
+**Para criar um pedido:**
 
 A criação de pedidos ocorre por meio do endpoint POST /orders e recebe um JSON com os dados do pedido.
-
-**Exemplo**:
+O endpoint grava o pedido no banco de dados, retorna o id do pedido e enfileira para o envio do webhook caso haja
+cadastro para o receiver-api.
 
 _**URL**_: http://localhost:8080/orders
 
 **Request Body**:
+
 ```json
 {
   "storeId": "1"
@@ -98,13 +99,17 @@ _**URL**_: http://localhost:8080/orders
 ```
 
 **Resposta**:
+STATUS CODE : 201
+
 ```json
 {
   "id": "6990de32ec75487ed49195e8",
   "status": "order.created"
 }
 ```
+
 curl:
+
 ```bash
 curl -X 'POST' \
   'http://localhost:8080/orders' \
@@ -114,3 +119,189 @@ curl -X 'POST' \
   "storeId": "1"
 }'
 ```
+
+Para cadastrar um webhook, basta enviar um POST para o endpoint /webhooks com os dados do webhook.
+Lembre-se que se for executado via docker a callbackUrl deve possuir o nome do container em vez de localhost.
+
+**URL**: POST http://localhost:8080/webhooks
+**Request Body**:
+
+```json
+{
+  "storeIDs": [
+    "1",
+    "2"
+  ],
+  "callbackUrl": "http://localhost:8081/order-receiver"
+}
+```
+
+curl:
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8080/webhooks' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "storeIDs": [
+    "1","2"
+  ],
+  "callbackUrl": "http://localhost:8081/order-receiver"
+}'
+```
+
+**Resposta**:
+STATUS CODE : 200
+
+```json
+{
+  "message": "webHook cadastrado com sucesso!"
+}
+```
+
+Para vizualizar os pedidos, apenas informar o id no endpoint: GET http://localhost:8080/orders/{id}
+
+**Resposta**:
+STATUS CODE : 200
+
+```json
+{
+  "id": "string",
+  "storeID": "string",
+  "productsIDs": [
+    "string"
+  ],
+  "clientID": "string",
+  "priority": 0,
+  "status": "string",
+  "createdAt": 0
+}
+```
+
+curl:
+
+```bash
+curl -X 'GET' \
+  'http://localhost:8080/orders/1' \
+  -H 'accept: */*'
+```
+
+**Resposta**:
+STATUS CODE : 200
+
+```json
+{
+  "id": "69914bb7d5e9eb47dc225082",
+  "storeID": "1",
+  "productsIDs": [
+    "1",
+    "2",
+    "3"
+  ],
+  "clientID": "1",
+  "priority": 0,
+  "status": "order.created",
+  "createdAt": 1771129783663
+}
+```
+
+Para buscar pedidos por status e orderID:
+PATCH: http://localhost:8080/orders/{orderId}/{status}
+
+curl:
+
+```bash
+curl -X 'PATCH' \
+  'http://localhost:8080/orders/69914bb7d5e9eb47dc225082/order.shipped' \
+  -H 'accept: */*'
+```
+
+**Resposta**:
+STATUS CODE : 202
+
+```json
+{
+  "id": "69914bb7d5e9eb47dc225082",
+  "status": "order.shipped"
+}
+```
+
+Listar todos os pedidos de loja especifica:
+GET: http://localhost:8080/orders?storeId=1
+
+curl:
+
+```bash
+curl -X 'GET' \
+  'http://localhost:8080/orders?storeId=1' \
+  -H 'accept: */*'
+```
+
+**Resposta**:
+STATUS CODE : 200
+
+```json
+[
+  {
+    "id": "69914bb7d5e9eb47dc225082",
+    "storeID": "1",
+    "productsIDs": [
+      "1",
+      "2",
+      "3"
+    ],
+    "clientID": "1",
+    "priority": 0,
+    "status": "order.shipped",
+    "createdAt": 1771129783663
+  },
+  {
+    "id": "69914bfbd5e9eb47dc225085",
+    "storeID": "1",
+    "productsIDs": [
+      "1",
+      "3"
+    ],
+    "clientID": "1",
+    "priority": 0,
+    "status": "order.created",
+    "createdAt": 1771129851593
+  }
+]
+```
+
+### ENDPOINTS RECEIVER:
+
+Recebe os pedidos enviados pelo webhook e grava no banco de dados.
+**URL**: POST http://localhost:8081/order-receiver
+**Request Body**:
+
+```json
+{
+  "eventID": "213",
+  "event": "order.created",
+  "orderID": "8802123",
+  "storeID": "1",
+  "timestamp": 1771086212
+}
+```
+
+curl:
+
+```curl
+curl -X 'POST' \
+  'http://localhost:8081/order-receiver' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "eventID": "213",
+  "event": "order.created",
+  "orderID": "8802123",
+  "storeID": "1",
+  "timestamp": 1771086212
+}'
+```
+
+**Resposta**:
+STATUS CODE: 202 

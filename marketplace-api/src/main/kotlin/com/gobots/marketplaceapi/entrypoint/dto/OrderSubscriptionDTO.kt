@@ -8,8 +8,4 @@ data class CreateSubscriptionRequest(
     @field:NotBlank val callbackUrl: String
 )
 
-data class SubscriptionResponseDTO(
-    val id: String,
-    val storeIDs: List<String>,
-    val callbackUrl: String
-)
+data class SubscriptionResponseDTO(val message: String)

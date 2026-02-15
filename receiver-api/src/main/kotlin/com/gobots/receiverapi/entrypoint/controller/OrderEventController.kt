@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 
-@Tag(name = "Order Controller")
+@Tag(name = "Pedidos")
 interface OrderEventController {
 
     @Operation(
