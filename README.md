@@ -4,6 +4,26 @@ O projeto faz parte do desafio técnico da GoBots.
 O objetivo é criar uma API RESTful que receba webhooks de eventos de pedidos e armazene informações relevantes em um
 banco de dados.
 
+O projeto possui as seguintes funcionalidades:
+
+marketplace-api:
+
+- Criar pedidos
+- Cadastrar webhooks
+- Enviar pedidos para o webhook
+- Scheduler para enviar pedidos para o webhook com retry em caso de erro.
+- Listar pedidos salvos
+- Listar eventos recebidos por id do evento
+- Listar pedidos salvos por loja
+- Atualizar status de pedidos com validações de transição
+
+receiver-api:
+
+- Receber webhooks de eventos de pedidos, enriquecer e salvar no banco de dados com idempotência.
+- Scheduler para verificar se o webhook foi recebido e processado com retry em caso de erro.
+- Listar eventos recebidos por id do evento
+- Listar pedidos salvos
+
 ## Arquitetura
 
 ### Clean Architecture
@@ -69,7 +89,7 @@ Foi usado as tecnologias mais recentes para a data atual FEV 2026:
 ## Uso de IA
 
 O uso de recurso de IA foi feito para autocomplete da própria IDE e pesquisa de dúvidas gerais.
-Os testes foram gerados pelo agente Junie e corrigidos manualmente com alguns erros gerados.
+Os testes foram gerados pelo agente Junie e corrigidos erros manualmente.
 
 Prompt para teste receiver-api _OrderEventController_:
 
@@ -96,26 +116,29 @@ Regras:
 ```
 
 Prompt para teste marketplace-api _OrderController_:
+
 ```markdown
-Escreva testes unitários para a classe OrderControllerImpl 
+Escreva testes unitários para a classe OrderControllerImpl
 do módulo marketplace-api.
 
 Stack: Kotlin, JUnit 5, MockK e Spring MockMvc.
 
 Cenários a cobrir:
+
 1. POST /orders cria novo pedido → deve retornar 201
-2. PATCH /orders//{orderId}/{status} se o eventStatus for valido deve retornar 202, caso EventStaus invalido  400, caso n encontrar a orderID 404
-3. GET /orders/{orderId} com body inválido deve retornar 400; caso n encontre o orderID  retorna 404
+2. PATCH /orders//{orderId}/{status} se o eventStatus for valido deve retornar 202, caso EventStaus invalido 400, caso n
+   encontrar a orderID 404
+3. GET /orders/{orderId} com body inválido deve retornar 400; caso n encontre o orderID retorna 404
 4. GET /orders→ deve retornar lista de eventos ou 404 caso banco esteja vazio
 5. GET /orders/{storeId} → deve retornar eventos do ID ou 404 caso n encontre
 
 Regras:
+
 - Mockar o OrderEventService
 - Seguir o padrão AAA (Arrange, Act, Assert)
 - Nomear testes de forma descritiva
 - Colocar os testes no diretório de testes correspondente ao pacote da classe
 ```
-
 
 ## Como executar
 
@@ -133,7 +156,7 @@ A documentação pode ser visualizado no **Swagger**: http://localhost:8080/swag
 
 ### Fluxo e endpoints:
 
-**Para criar um pedido:**
+**Como criar pedido**
 
 A criação de pedidos ocorre por meio do endpoint POST /orders e recebe um JSON com os dados do pedido.
 O endpoint grava o pedido no banco de dados, retorna o id do pedido e enfileira para o envio do webhook caso haja
@@ -163,19 +186,11 @@ cadastro para o receiver-api.
 }
 ```
 
-curl:
-
-```bash
-curl -X 'POST' \
-  'http://localhost:8080/orders' \
-  -H 'accept: */*' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "storeId": "1"
-}'
-```
+**Como cadastrar um webhook:**
 
 - Para cadastrar um webhook, basta enviar um POST para o endpoint /webhooks com os dados do webhook.
+  Salva o evento no banco com status PENDING. Se sucesso no envio altera para DELIVERED. A um scheduler tenta processar
+  de tempos em tempos.
   Lembre-se que se for executado via docker a callbackUrl deve possuir o nome do container em vez de localhost.
 
   **POST**: http://localhost:8080/webhooks
@@ -192,21 +207,6 @@ curl -X 'POST' \
 }
 ```
 
-curl:
-
-```bash
-curl -X 'POST' \
-  'http://localhost:8080/webhooks' \
-  -H 'accept: */*' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "storeIDs": [
-    "1","2"
-  ],
-  "callbackUrl": "http://localhost:8081/order-receiver"
-}'
-```
-
 **Resposta**:
 
 #### STATUS CODE:
@@ -219,237 +219,43 @@ curl -X 'POST' \
 }
 ```
 
-- Para vizualizar os pedidos, apenas informar o id no endpoint: GET http://localhost:8080/orders/id/{orderId}
+**Como validar que o Receiver salvou**
 
-**Resposta**:
+Para validar se o Receiver salvou o pedido, basta enviar um GET para o endpoint /order-receiver/ ou
+/order-receiver/byID/{id} e verificar se o pedido foi salvo.
+Processado informa se conseguir enriquecer o Json buscando no endpoint do marketplace-api. Caso processed:false, o
+scheduler tenta processar de tempos em tempos.
 
-#### STATUS CODE:
+GET: http://localhost:8081/order-receiver/
+GET: http://localhost:8081/order-receiver/byID/{id}
 
-- **200** Sucesso, dados retornados.
-- **404** Nenhum dado encontrado.
-
-```json
-{
-  "id": "string",
-  "storeID": "string",
-  "productsIDs": [
-    "string"
-  ],
-  "clientID": "string",
-  "priority": 0,
-  "status": "string",
-  "createdAt": 0
-}
-```
-
-curl:
-
-```bash
-curl -X 'GET' \
-  'http://localhost:8080/orders/id/1' \
-  -H 'accept: */*'
-```
-
-**Resposta**:
-
-#### STATUS CODE:
-
-- **200** Sucesso, dados retornados.
-- **404** Nenhum dado encontrado.
-
-```json
-{
-  "id": "69914bb7d5e9eb47dc225082",
-  "storeID": "1",
-  "productsIDs": [
-    "1",
-    "2",
-    "3"
-  ],
-  "clientID": "1",
-  "priority": 0,
-  "status": "order.created",
-  "createdAt": 1771129783663
-}
-```
-
-- Para buscar pedidos por status e orderID:
-
-  **PATCH**: http://localhost:8080/orders/{orderId}/{status}
-
-curl:
-
-```bash
-curl -X 'PATCH' \
-  'http://localhost:8080/orders/69914bb7d5e9eb47dc225082/order.shipped' \
-  -H 'accept: */*'
-```
-
-**Resposta**:
-
-#### STATUS CODE:
-
-- **202** Sucesso no update.
-- **404** Nenhum dado encontrado.
-
-```json
-{
-  "id": "69914bb7d5e9eb47dc225082",
-  "status": "order.shipped"
-}
-```
-
-- Listar todos os pedidos de loja especifica:
-
-  **GET**: http://localhost:8080/orders/store/{storeId}
-
-curl:
-
-```bash
-curl -X 'GET' \
-  'http://localhost:8080/orders/store/1' \
-  -H 'accept: */*'
-```
-
-**Resposta**:
-
-#### STATUS CODE:
-
-- **200** sucesso.
-- **404** Nenhum dado encontrado.
+Resposta:
 
 ```json
 [
   {
-    "id": "69914bb7d5e9eb47dc225082",
+    "id": "6991d7cb0c71bd71607642aa",
+    "event": "CREATED",
+    "orderID": "6991d7c8467e0b90251b6ce4",
     "storeID": "1",
-    "productsIDs": [
-      "1",
-      "2",
-      "3"
-    ],
-    "clientID": "1",
-    "priority": 0,
-    "status": "order.shipped",
-    "createdAt": 1771129783663
+    "timestamp": 1771165640036,
+    "processed": true
   },
   {
-    "id": "69914bfbd5e9eb47dc225085",
-    "storeID": "1",
-    "productsIDs": [
-      "1",
-      "3"
-    ],
-    "clientID": "1",
-    "priority": 0,
-    "status": "order.created",
-    "createdAt": 1771129851593
-  }
-]
-```
-
-## Endpoints receiver-api:
-
-A documentação pode ser visualizado no **Swagger**: http://localhost:8081/swagger-ui/index.html
-
-### Fluxo e endpoints:
-
-- Recebe os pedidos enviados pelo webhook e grava no banco de dados.
-
-  **POST**: http://localhost:8081/order-receiver
-
-**Request Body**:
-
-```json
-{
-  "eventID": "213",
-  "event": "order.created",
-  "orderID": "8802123",
-  "storeID": "1",
-  "timestamp": 1771086212
-}
-```
-
-**curl**:
-
-```curl
-curl -X 'POST' \
-  'http://localhost:8081/order-receiver' \
-  -H 'accept: */*' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "eventID": "213",
-  "event": "order.created",
-  "orderID": "8802123",
-  "storeID": "1",
-  "timestamp": 1771086212
-}'
-```
-
-**Resposta**:
-
-#### STATUS CODE:
-
-- **202** webhook recebido e gravado.
-- **200** ignora, pois já foi recebido anteriormente.
-- **400** erro ao receber dados.
-
-- Para **validar** se o webhook foi recebido e se foi processado, basta informar o orderID:
-
-**GET**: http://localhost:8081/order-receiver/byID/{id}
-
-```bash
-curl -X 'GET' \
-  'http://localhost:8081/order-receiver/order-receiver/byID/6991d7cb0c71bd71607642aa' \
-  -H 'accept: */*'
-```
-
-**Resposta**:
-
-#### STATUS CODE:
-
-- **200** caso houver dados
-- **404** se não houver dados
-
-```json
-[
-  {
-    "id": "6991d7cb0c71bd71607642aa",
-    "event": "CREATED",
+    "id": "6992033f1da516c2836cf8d4",
+    "event": "PAID",
     "orderID": "6991d7c8467e0b90251b6ce4",
     "storeID": "1",
-    "timestamp": 1771165640036
-  }
-]
-```
-
-- Para listar todos os pedidos recebidos:
-
-  **GET**: http://localhost:8081/order-receiver/
-
-curl:
-
-```bash
-curl -X 'GET' \
-  'http://localhost:8081/order-receiver/order-receiver/' \
-  -H 'accept: */*'
-```
-
-**Resposta**:
-
-#### STATUS CODE:
-
-- **200** caso houver dados
-- **404** se não houver dados
-
-``` json
-[
+    "timestamp": 1771176765416,
+    "processed": true
+  },
   {
-    "id": "6991d7cb0c71bd71607642aa",
-    "event": "CREATED",
+    "id": "699205e7df2675ea42f5d569",
+    "event": "SHIPPED",
     "orderID": "6991d7c8467e0b90251b6ce4",
     "storeID": "1",
-    "timestamp": 1771165640036
+    "timestamp": 1771177445494,
+    "processed": true
   }
 ]
 ```
