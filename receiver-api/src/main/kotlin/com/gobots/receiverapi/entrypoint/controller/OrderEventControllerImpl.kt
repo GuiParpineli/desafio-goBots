@@ -34,9 +34,9 @@ class OrderEventControllerImpl(
         return ResponseEntity.status(HttpStatus.ACCEPTED).build()
     }
 
-    @GetMapping("/order-receiver/")
+    @GetMapping("/")
     override fun listAll(): List<OrderEventResponseDTO> = service.findAll()
 
-    @GetMapping("/order-receiver/byID/{id}")
+    @GetMapping("/byID/{id}")
     override fun listAll(@PathVariable id: String): List<OrderEventResponseDTO> = service.findByID(id)
 }

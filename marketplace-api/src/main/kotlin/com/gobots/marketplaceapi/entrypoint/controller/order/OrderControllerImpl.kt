@@ -16,9 +16,8 @@ import org.springframework.web.server.ResponseStatusException
 class OrderControllerImpl(private val service: OrderService) : OrderController {
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     override fun create(@RequestBody @Valid req: CreateOrderRequest): ResponseEntity<OrderResponseDTO> {
-        return ResponseEntity.ok(service.create(req.storeId))
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(req.storeId))
     }
 
     @PatchMapping("/{orderId}/{status}")
@@ -37,8 +36,8 @@ class OrderControllerImpl(private val service: OrderService) : OrderController {
     @GetMapping
     override fun findAll(): ResponseEntity<List<OrderCompleteResponseDTO>> = ResponseEntity.ok(service.findAll())
 
-    @GetMapping(params = ["storeId"])
-    override fun findByStore(@RequestParam storeId: String): ResponseEntity<List<OrderCompleteResponseDTO>> {
+    @GetMapping("{storeId}")
+    override fun findByStore(@PathVariable storeId: String): ResponseEntity<List<OrderCompleteResponseDTO>> {
         return ResponseEntity.ok(service.findByStoreId(storeId))
     }
 }

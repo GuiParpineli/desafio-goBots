@@ -68,7 +68,35 @@ Foi usado as tecnologias mais recentes para a data atual FEV 2026:
 
 ## Uso de IA
 
-O uso de recurso de IA foi feito apenas para autocomplete da própria IDE e pesquisa de dúvidas gerais.
+O uso de recurso de IA foi feito para autocomplete da própria IDE e pesquisa de dúvidas gerais.
+Os testes foram gerados pelo agente Junie e corrigidos manualmente com alguns erros gerados.
+
+Prompt para teste receiver-api _OrderEventController_:
+
+```markdown
+Escreva testes unitários para a classe OrderEventControllerImpl
+do módulo receiver-api.
+
+Stack: Kotlin, JUnit 5, MockK,Spring MockMvc.
+
+Cenários a cobrir:
+
+1. POST /order-receiver com evento novo → deve retornar 202
+2. POST /order-receiver com evento duplicado → deve retornar 200
+3. POST /order-receiver com body inválido → deve retornar 400
+4. GET /order-receiver/ → deve retornar lista de eventos
+5. GET /order-receiver/byID/{id} → deve retornar eventos do ID
+
+Regras:
+
+- Mockar o OrderEventService
+- Seguir o padrão AAA (Arrange, Act, Assert)
+- Nomear testes de forma descritiva
+- Colocar os testes no diretório de testes correspondente ao pacote da classe
+```
+
+Prompt para teste marketplace-api _OrderController_:
+
 
 ## Como executar
 
@@ -254,13 +282,13 @@ curl -X 'PATCH' \
 
 - Listar todos os pedidos de loja especifica:
 
-  **GET**: http://localhost:8080/orders?storeId=1
+  **GET**: http://localhost:8080/orders/{storeId}
 
 curl:
 
 ```bash
 curl -X 'GET' \
-  'http://localhost:8080/orders?storeId=1' \
+  'http://localhost:8080/orders/1' \
   -H 'accept: */*'
 ```
 
