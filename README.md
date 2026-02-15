@@ -47,8 +47,12 @@ Entities podem ser feitas para JPA e MongoDB sem quebrar o fluxo do código.
 O código é extremamente verboso e até repetitivo em alguns casos. Precisa de diversos conversores(mappers) para classes
 em muitos casos praticamente idênticos.
 Programadores inexperientes podem ter dificuldade em entender o código devido à complexidade e abstração.
-Exige configurações extras para o projeto funcionar.
-Exige conhecimento do Framework além do básico.
+Exige configurações extras para o projeto funcionar, também exige conhecimento do Framework além do básico.
+
+- #### Observação
+
+Pode surgir a dúvida sobre a perda de desempenho devido a diversos objetos, conversões e abstrações, mas JDK modernas
+isso é irrelevante principalmente com o G1 GC, o problema é na verbosidade o que demora mais para ser desenvolvido.
 
 ## Tecnologias
 
