@@ -7,4 +7,5 @@ interface OrderEventRepository {
     fun save(doc: OrderEvent)
     fun findAll(): List<OrderEvent>
     fun findById(id: String): List<OrderEvent>
+    fun findPendingEvents(): List<OrderEvent>
 }

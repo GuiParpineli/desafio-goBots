@@ -12,7 +12,7 @@ class OrderEventUseCaseImpl(
     override fun checkEventProcessed(eventId: String) = repo.findEventByID(eventId)
 
     override fun createEvent(doc: OrderEvent) {
-        val snapshot = client.getOrderSnapshot(doc.orderID)
+        val snapshot = client.getOrderSnapshot(doc.orderID) ?: return repo.save(doc)
         doc.copy(orderSnapshot = snapshot, processed = true).also { repo.save(it) }
     }
 

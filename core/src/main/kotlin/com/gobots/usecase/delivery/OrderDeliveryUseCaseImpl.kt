@@ -22,7 +22,7 @@ class OrderDeliveryUseCaseImpl(
                 OrderDelivery(
                     subscriptionId = sub.id ?: error("subscription id missing"),
                     callbackUrl = sub.callbackUrl,
-                    eventID = payload.id,
+                    eventID = payload.eventID,
                     event = payload.event,
                     orderID = payload.orderID,
                     storeID = payload.storeID,

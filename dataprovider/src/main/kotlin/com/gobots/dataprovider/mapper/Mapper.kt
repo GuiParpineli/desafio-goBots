@@ -44,7 +44,7 @@ object Mapper {
         orderID = this.orderID,
         storeID = this.storeID,
         payload = OrderPayloadEmbedded(
-            id = this.payload.id,
+            id = this.payload.eventID,
             event = this.payload.event,
             orderID = this.payload.orderID,
             storeID = this.payload.storeID,
@@ -66,7 +66,7 @@ object Mapper {
         orderID = this.orderID,
         storeID = this.storeID,
         payload = OrderPayload(
-            id = this.payload.id,
+            eventID = this.payload.id,
             event = this.payload.event,
             orderID = this.payload.orderID,
             storeID = this.payload.storeID,

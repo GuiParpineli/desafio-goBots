@@ -11,10 +11,10 @@ import org.springframework.web.client.RestClient
 import java.time.Instant
 
 @Component
-class DeliveryScheduler(
+class DeliveryEventScheduler(
     private val deliveryRepo: OrderDeliveryRepository,
 ) {
-    private val log = LoggerFactory.getLogger(DeliveryScheduler::class.java)
+    private val log = LoggerFactory.getLogger(DeliveryEventScheduler::class.java)
     private val restClient = RestClient.create()
 
     companion object {

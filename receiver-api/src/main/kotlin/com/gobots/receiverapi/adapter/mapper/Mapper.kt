@@ -1,17 +1,19 @@
 package com.gobots.receiverapi.adapter.mapper
 
-import com.gobots.receiverapi.adapter.infra.client.MarketplaceOrderResponse
+import com.gobots.receiverapi.adapter.infra.dataprovider.client.MarketplaceOrderResponse
 import com.gobots.receiverapi.adapter.infra.dataprovider.repository.entity.OrderEventDocument
 import com.gobots.receiverapi.adapter.infra.dataprovider.repository.entity.OrderSnapshotEmbedded
 import com.gobots.receiverapi.core.model.OrderEvent
 import com.gobots.receiverapi.core.model.OrderSnapshot
 import com.gobots.receiverapi.entrypoint.controller.dto.OrderEventResponseDTO
 import com.gobots.receiverapi.entrypoint.controller.dto.OrderReceiveDTO
+import org.springframework.data.mongodb.core.aggregation.MergeOperation.UniqueMergeId.id
 
 object Mapper {
 
     fun OrderEvent.toDocument() = OrderEventDocument(
-        eventId = this.id,
+        id = this.id,
+        eventId = this.eventID,
         event = this.event,
         orderId = this.orderID,
         storeId = this.storeID,
@@ -31,7 +33,8 @@ object Mapper {
     )
 
     fun OrderEventDocument.toDomain() = OrderEvent(
-        id = this.eventId,
+        id = this.id!!,
+        eventID = this.eventId,
         event = this.event,
         orderID = this.orderId,
         storeID = this.storeId,
@@ -51,7 +54,7 @@ object Mapper {
     )
 
     fun OrderReceiveDTO.toDomain() = OrderEvent(
-        id = this.id,
+        eventID = this.eventID,
         event = this.event,
         orderID = this.orderID,
         storeID = this.storeID,
@@ -59,7 +62,7 @@ object Mapper {
     )
 
     fun OrderEvent.toDTO() = OrderEventResponseDTO(
-        id = this.id,
+        id = this.id!!,
         event = this.event,
         orderID = this.orderID,
         storeID = this.storeID,

@@ -1,4 +1,4 @@
-package com.gobots.receiverapi.adapter.infra.client
+package com.gobots.receiverapi.adapter.infra.dataprovider.client
 
 import com.gobots.receiverapi.adapter.mapper.Mapper.toSnapShot
 import com.gobots.receiverapi.core.data.OrderClient

@@ -73,3 +73,44 @@ O projeto pode ser executado com Docker. Para isso, basta executar o comando:
 ```bash
   docker-compose up --build
 ```
+
+## Utilização das APIs
+
+### marketplace-api
+
+A documentação pode ser visualizado no Swagger: http://localhost:8080/swagger-ui/index.html
+
+Fluxo e endpoints:
+
+Para criar um pedido:
+
+A criação de pedidos ocorre por meio do endpoint POST /orders e recebe um JSON com os dados do pedido.
+
+**Exemplo**:
+
+_**URL**_: http://localhost:8080/orders
+
+**Request Body**:
+```json
+{
+  "storeId": "1"
+}
+```
+
+**Resposta**:
+```json
+{
+  "id": "6990de32ec75487ed49195e8",
+  "status": "order.created"
+}
+```
+curl:
+```bash
+curl -X 'POST' \
+  'http://localhost:8080/orders' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "storeId": "1"
+}'
+```

@@ -23,7 +23,7 @@ class OrderEventService(private val useCase: OrderEventUseCase) {
     }
 
     fun create(doc: OrderReceiveDTO) {
-        log.info("Creating order event: {}", doc.id)
+        log.info("Creating order event: {}", doc.orderID)
         useCase.createEvent(doc.toDomain())
     }
 

@@ -1,4 +1,4 @@
-package com.gobots.receiverapi.adapter.infra.client
+package com.gobots.receiverapi.adapter.infra.dataprovider.client
 
 data class MarketplaceOrderResponse(
     val id: String,

@@ -4,7 +4,7 @@ import java.time.Instant
 import java.util.*
 
 data class OrderPayload(
-    val id: String = "event-${UUID.randomUUID()}",
+    val eventID: String = "event-${UUID.randomUUID()}",
     val event: EventStatus,
     val orderID: String,
     val storeID: String,

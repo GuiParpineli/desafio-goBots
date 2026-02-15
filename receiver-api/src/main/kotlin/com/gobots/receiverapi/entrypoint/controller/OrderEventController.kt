@@ -1,41 +1,44 @@
 package com.gobots.receiverapi.entrypoint.controller
 
-import com.gobots.receiverapi.adapter.service.OrderEventService
 import com.gobots.receiverapi.entrypoint.controller.dto.OrderEventResponseDTO
 import com.gobots.receiverapi.entrypoint.controller.dto.OrderReceiveDTO
-import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
 
+@Tag(name = "Order Controller")
+interface OrderEventController {
 
-@RestController
-@RequestMapping("/order-receiver")
-class OrderEventController(
-    private val service: OrderEventService,
-) {
-    private val log = LoggerFactory.getLogger(OrderEventController::class.java)
+    @Operation(
+        summary = "WebHook pra receber um pedido. Enriquece e salva no banco de dados.",
+        description = """
+            Endpoint destinado para receber um pedido do Marketplace.
+            Busca informações do pedido no Marketplace baseado no ID e salva no payload banco de dados.
+            Marca item como processado.
+            
+            O campo id define um evento único, ao alterar o status será observado o campo orderID e o evento será um novo.
+            Se o campo orderID não for encontrado, o evento será ignorado.
+            O campo event pode ser preenchido com os valores: order.created, order.paid, order.shipped, order.cancelled.
+            """
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Pedido recebido anteriormente, ignorado."),
+            ApiResponse(
+                responseCode = "202",
+                description = "Pedido recebido com sucesso e enviado para processamento."
+            ),
+            ApiResponse(responseCode = "400", description = "Dados inválidos."),
+            ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+        ]
+    )
+    fun receive(body: OrderReceiveDTO): ResponseEntity<Void>
 
-    @PostMapping()
-    fun receive(@RequestBody body: OrderReceiveDTO): ResponseEntity<Void> {
-        if (service.checkEventProcessed(body.id)) {
-            log.info("Duplicate event ignored: {}", body.id)
-            return ResponseEntity.ok().build()
-        }
-        service.create(body)
-        log.info("Order received: event={}, orderId={}, storeId={}", body.event, body.orderID, body.storeID)
+    @Operation(summary = "Lista todos os pedidos salvos no banco de dados.")
+    fun listAll(): List<OrderEventResponseDTO>
 
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build()
-    }
-
-    @GetMapping("/order-receiver/")
-    fun listAll(): List<OrderEventResponseDTO> = service.findAll()
-
-    @GetMapping("/order-receiver/byID/{id}")
-    fun listAll(@PathVariable id: String): List<OrderEventResponseDTO> = service.findByID(id)
+    @Operation(summary = "Lista todos os pedidos salvos no banco de dados por ID.")
+    fun listAll(id: String): List<OrderEventResponseDTO>
 }

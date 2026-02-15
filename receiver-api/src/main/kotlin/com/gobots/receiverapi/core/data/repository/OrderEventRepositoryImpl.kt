@@ -15,11 +15,8 @@ class OrderEventRepositoryImpl(private val repo: OrderEventMongoRepository) : Or
         repo.save(doc.toDocument())
     }
 
-    override fun findAll(): List<OrderEvent> {
-        return repo.findAll().map { it.toDomain() }.toList()
-    }
+    override fun findAll() = repo.findAll().map { it.toDomain() }.toList()
 
-    override fun findById(id: String): List<OrderEvent> {
-        return repo.findById(id).map { it.toDomain() }.toList()
-    }
+    override fun findById(id: String) = repo.findById(id).map { it.toDomain() }.toList()
+    override fun findPendingEvents(): List<OrderEvent> = repo.findAllByProcessedFalse().map { it.toDomain() }
 }

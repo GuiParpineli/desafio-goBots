@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface OrderEventMongoRepository : MongoRepository<OrderEventDocument, String> {
     fun existsByEventId(eventId: String): Boolean
+    fun findAllByProcessedFalse(): List<OrderEventDocument>
 }
