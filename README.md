@@ -77,7 +77,7 @@ Prompt para teste receiver-api _OrderEventController_:
 Escreva testes unitários para a classe OrderEventControllerImpl
 do módulo receiver-api.
 
-Stack: Kotlin, JUnit 5, MockK,Spring MockMvc.
+Stack: Kotlin, JUnit 5, Mock e Spring MockMvc.
 
 Cenários a cobrir:
 
@@ -96,6 +96,25 @@ Regras:
 ```
 
 Prompt para teste marketplace-api _OrderController_:
+```markdown
+Escreva testes unitários para a classe OrderControllerImpl 
+do módulo marketplace-api.
+
+Stack: Kotlin, JUnit 5, MockK e Spring MockMvc.
+
+Cenários a cobrir:
+1. POST /orders cria novo pedido → deve retornar 201
+2. PATCH /orders//{orderId}/{status} se o eventStatus for valido deve retornar 202, caso EventStaus invalido  400, caso n encontrar a orderID 404
+3. GET /orders/{orderId} com body inválido deve retornar 400; caso n encontre o orderID  retorna 404
+4. GET /orders→ deve retornar lista de eventos ou 404 caso banco esteja vazio
+5. GET /orders/{storeId} → deve retornar eventos do ID ou 404 caso n encontre
+
+Regras:
+- Mockar o OrderEventService
+- Seguir o padrão AAA (Arrange, Act, Assert)
+- Nomear testes de forma descritiva
+- Colocar os testes no diretório de testes correspondente ao pacote da classe
+```
 
 
 ## Como executar
@@ -200,7 +219,7 @@ curl -X 'POST' \
 }
 ```
 
-- Para vizualizar os pedidos, apenas informar o id no endpoint: GET http://localhost:8080/orders/{id}
+- Para vizualizar os pedidos, apenas informar o id no endpoint: GET http://localhost:8080/orders/id/{orderId}
 
 **Resposta**:
 
@@ -227,7 +246,7 @@ curl:
 
 ```bash
 curl -X 'GET' \
-  'http://localhost:8080/orders/1' \
+  'http://localhost:8080/orders/id/1' \
   -H 'accept: */*'
 ```
 
@@ -282,13 +301,13 @@ curl -X 'PATCH' \
 
 - Listar todos os pedidos de loja especifica:
 
-  **GET**: http://localhost:8080/orders/{storeId}
+  **GET**: http://localhost:8080/orders/store/{storeId}
 
 curl:
 
 ```bash
 curl -X 'GET' \
-  'http://localhost:8080/orders/1' \
+  'http://localhost:8080/orders/store/1' \
   -H 'accept: */*'
 ```
 

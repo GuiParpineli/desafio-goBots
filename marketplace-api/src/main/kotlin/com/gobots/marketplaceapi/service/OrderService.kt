@@ -25,7 +25,8 @@ class OrderService(
         return OrderResponseDTO(order.id!!, order.status.wireName())
     }
 
-    fun findAll(): List<OrderCompleteResponseDTO> = orderUseCase.findAll().map { it.toDTO() }
+    fun findAll(): List<OrderCompleteResponseDTO> =
+        orderUseCase.findAll().also { if (it.isEmpty()) throw NotFoundException() }.map { it.toDTO() }
 
     fun findByStoreId(storeId: String): List<OrderCompleteResponseDTO> {
         val findByStoreId = orderUseCase.findByStoreId(storeId).also { if (it.isEmpty()) throw NotFoundException() }

@@ -28,7 +28,7 @@ class OrderControllerImpl(private val service: OrderService) : OrderController {
         return ResponseEntity.accepted().body(service.updateEvent(orderId, EventStatus.fromWireName(status)))
     }
 
-    @GetMapping("/{orderId}")
+    @GetMapping("/id/{orderId}")
     override fun findById(@PathVariable orderId: String): ResponseEntity<OrderCompleteResponseDTO> {
         return ResponseEntity.ok(service.findById(orderId))
     }
@@ -36,7 +36,7 @@ class OrderControllerImpl(private val service: OrderService) : OrderController {
     @GetMapping
     override fun findAll(): ResponseEntity<List<OrderCompleteResponseDTO>> = ResponseEntity.ok(service.findAll())
 
-    @GetMapping("{storeId}")
+    @GetMapping("/store/{storeId}")
     override fun findByStore(@PathVariable storeId: String): ResponseEntity<List<OrderCompleteResponseDTO>> {
         return ResponseEntity.ok(service.findByStoreId(storeId))
     }
