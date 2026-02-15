@@ -20,7 +20,7 @@ class OrderClientImpl(
     override fun getOrderSnapshot(orderID: String): OrderSnapshot? {
         return runCatching {
             client.get()
-                .uri("$baseUrl/orders/$orderID")
+                .uri("$baseUrl/orders/id/$orderID")
                 .retrieve()
                 .body<MarketplaceOrderResponse>()?.toSnapShot()
         }.onFailure {

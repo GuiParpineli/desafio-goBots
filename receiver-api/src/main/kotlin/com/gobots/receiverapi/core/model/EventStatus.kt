@@ -1,8 +1,5 @@
 package com.gobots.receiverapi.core.model
 
-import java.util.concurrent.Future
-import javax.print.attribute.standard.JobState.COMPLETED
-
 enum class EventStatus {
     CREATED, PAID, SHIPPED, COMPLETED, CANCELLED;
 
