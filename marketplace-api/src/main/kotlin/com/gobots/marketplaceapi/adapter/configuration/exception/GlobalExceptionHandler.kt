@@ -46,7 +46,7 @@ class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NotFoundException::class)
-    fun notFoundException(ex: NotFoundException): ResponseEntity<ValidationErrorResponse> {
+    fun handleNotFound(ex: NotFoundException): ResponseEntity<ValidationErrorResponse> {
         return ResponseEntity.notFound().build()
     }
 }

@@ -22,7 +22,7 @@ class OrderService(
             orderId = order.id ?: error("order id missing"),
             storeId = order.storeId,
         )
-        return OrderResponse(order.id!!, order.status.wireName()).toDTO()
+        return OrderResponseDTO(order.id!!, order.status.wireName())
     }
 
     fun findAll(): List<OrderCompleteResponseDTO> = orderUseCase.findAll().map { it.toDTO() }
@@ -41,7 +41,7 @@ class OrderService(
             storeId = order.storeId,
         )
 
-        return OrderResponse(order.id!!, order.status.wireName()).toDTO()
+        return OrderResponseDTO(order.id!!, order.status.wireName())
     }
 
     fun findById(orderId: String): OrderCompleteResponseDTO {

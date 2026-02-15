@@ -7,9 +7,8 @@ import com.gobots.receiverapi.core.model.OrderEvent
 import kotlin.jvm.optionals.toList
 
 class OrderEventRepositoryImpl(private val repo: OrderEventMongoRepository) : OrderEventRepository {
-    override fun findEventByID(eventId: String): Boolean {
-        return repo.existsByEventId(eventId)
-    }
+
+    override fun findEventByID(eventId: String): Boolean = repo.existsByEventId(eventId)
 
     override fun save(doc: OrderEvent) {
         repo.save(doc.toDocument())
@@ -18,5 +17,6 @@ class OrderEventRepositoryImpl(private val repo: OrderEventMongoRepository) : Or
     override fun findAll() = repo.findAll().map { it.toDomain() }.toList()
 
     override fun findById(id: String) = repo.findById(id).map { it.toDomain() }.toList()
+
     override fun findPendingEvents(): List<OrderEvent> = repo.findAllByProcessedFalse().map { it.toDomain() }
 }
