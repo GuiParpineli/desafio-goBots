@@ -74,13 +74,13 @@ O projeto pode ser executado com Docker. Para isso, basta executar o comando:
   docker-compose up --build
 ```
 
-## Utilização das APIs
+# Utilização das APIs
 
-### ENDPOINTS MARKETPLACE:
+## Endpoints marketplace-api:
 
 A documentação pode ser visualizado no **Swagger**: http://localhost:8080/swagger-ui/index.html
 
-## Fluxo e endpoints:
+### Fluxo e endpoints:
 
 **Para criar um pedido:**
 
@@ -297,11 +297,11 @@ curl -X 'GET' \
 ]
 ```
 
-### ENDPOINTS RECEIVER:
+## Endpoints receiver-api:
 
 A documentação pode ser visualizado no **Swagger**: http://localhost:8081/swagger-ui/index.html
 
-## Fluxo e endpoints:
+### Fluxo e endpoints:
 
 - Recebe os pedidos enviados pelo webhook e grava no banco de dados.
 
