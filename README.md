@@ -99,7 +99,11 @@ cadastro para o receiver-api.
 ```
 
 **Resposta**:
-STATUS CODE : 201
+
+#### STATUS CODE:
+
+- **201** Sucesso, pedido criado.
+- **400** Dados inválidos.
 
 ```json
 {
@@ -153,7 +157,10 @@ curl -X 'POST' \
 ```
 
 **Resposta**:
-STATUS CODE : 200
+
+#### STATUS CODE:
+
+- **200** Sucesso.
 
 ```json
 {
@@ -164,7 +171,11 @@ STATUS CODE : 200
 - Para vizualizar os pedidos, apenas informar o id no endpoint: GET http://localhost:8080/orders/{id}
 
 **Resposta**:
-STATUS CODE : 200
+
+#### STATUS CODE:
+
+- **200** Sucesso, dados retornados.
+- **404** Nenhum dado encontrado.
 
 ```json
 {
@@ -189,7 +200,11 @@ curl -X 'GET' \
 ```
 
 **Resposta**:
-STATUS CODE : 200
+
+#### STATUS CODE:
+
+- **200** Sucesso, dados retornados.
+- **404** Nenhum dado encontrado.
 
 ```json
 {
@@ -220,7 +235,11 @@ curl -X 'PATCH' \
 ```
 
 **Resposta**:
-STATUS CODE : 202
+
+#### STATUS CODE:
+
+- **202** Sucesso no update.
+- **404** Nenhum dado encontrado.
 
 ```json
 {
@@ -242,7 +261,11 @@ curl -X 'GET' \
 ```
 
 **Resposta**:
-STATUS CODE : **200**
+
+#### STATUS CODE:
+
+- **200** sucesso.
+- **404** Nenhum dado encontrado.
 
 ```json
 [
@@ -313,11 +336,12 @@ curl -X 'POST' \
 ```
 
 **Resposta**:
-STATUS CODE: 202
 
-Apenas retorna 202 para garantir que o webhook foi recebido.
+#### STATUS CODE:
 
-Retorna 200 caso já tenha sido recebido anteriormente.
+- **202** webhook recebido e gravado.
+- **200** ignora, pois já foi recebido anteriormente.
+- **400** erro ao receber dados.
 
 - Para **validar** se o webhook foi recebido e se foi processado, basta informar o orderID:
 
@@ -330,7 +354,11 @@ curl -X 'GET' \
 ```
 
 **Resposta**:
-STATUS CODE: 200
+
+#### STATUS CODE:
+
+- **200** caso houver dados
+- **404** se não houver dados
 
 ```json
 [
@@ -357,7 +385,11 @@ curl -X 'GET' \
 ```
 
 **Resposta**:
-STATUS CODE: 200
+
+#### STATUS CODE:
+
+- **200** caso houver dados
+- **404** se não houver dados
 
 ``` json
 [
